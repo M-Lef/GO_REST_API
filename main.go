@@ -1,59 +1,18 @@
 package main
 
-
 import (
-	"context"
+    "context"
+    "GO_REST_API/Helper"
 	"fmt"
-    "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/mongo/options"
     //"encoding/json"
 	"log"
 )
-type User []struct {
-	ID         string   `json:"id"`
-	Password   string   `json:"password"`
-	IsActive   bool     `json:"isActive"`
-	Balance    string   `json:"balance"`
-	Age        string   `json:"age"`
-	Name       string   `json:"name"`
-	Gender     string   `json:"gender"`
-	Company    string   `json:"company"`
-	Email      string   `json:"email"`
-	Phone      string   `json:"phone"`
-	Address    string   `json:"address"`
-	About      string   `json:"about"`
-	Registered string   `json:"registered"`
-	Latitude   float64  `json:"latitude"`
-	Longitude  float64  `json:"longitude"`
-	Tags       []string `json:"tags"`
-	Friends    []struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"friends"`
-	Data string `json:"data"`
-}
-
-type Users []User
 
 func main() {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:8082")
 
-    // Connect to MongoDB
-    client, err := mongo.Connect(context.TODO(), clientOptions)
-
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    err = client.Ping(context.TODO(), nil)
-
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    fmt.Println("Connected to MongoDB!")
-
+    client := Helper.ConnectDB()
     collection := client.Database("database2").Collection("people")
 
     findOptions := options.Find()
@@ -65,13 +24,13 @@ func main() {
     if err != nil {
         log.Fatal(err) }
 
-    var users Users
-    var user User
+    var users Helper.Users
+    var user Helper.User
 
     for cur.Next(context.TODO()) {
         
         elem := &bson.D{}
-        
+    
         if err := cur.Decode(elem); err != nil {
                 log.Fatal(err)
         }
@@ -94,19 +53,10 @@ func main() {
     // Close the cursor once finished
     cur.Close(context.TODO())
     
-    err = client.Disconnect(context.TODO())
-
-    if err != nil {
-        log.Fatal(err)
-    }
-    fmt.Println("Connection to MongoDB closed.")
-
-    }
-
-
+    Helper.DisconnectDB(client)
+}
 
 /*package main
-
 
 import (
 	"net/http"
