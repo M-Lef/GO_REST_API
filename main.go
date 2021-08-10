@@ -2,8 +2,113 @@ package main
 
 
 import (
-    //"fmt"
-    //"log"
+	"context"
+	"fmt"
+    "go.mongodb.org/mongo-driver/mongo"
+    "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/mongo/options"
+    //"encoding/json"
+	"log"
+)
+type User []struct {
+	ID         string   `json:"id"`
+	Password   string   `json:"password"`
+	IsActive   bool     `json:"isActive"`
+	Balance    string   `json:"balance"`
+	Age        string   `json:"age"`
+	Name       string   `json:"name"`
+	Gender     string   `json:"gender"`
+	Company    string   `json:"company"`
+	Email      string   `json:"email"`
+	Phone      string   `json:"phone"`
+	Address    string   `json:"address"`
+	About      string   `json:"about"`
+	Registered string   `json:"registered"`
+	Latitude   float64  `json:"latitude"`
+	Longitude  float64  `json:"longitude"`
+	Tags       []string `json:"tags"`
+	Friends    []struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"friends"`
+	Data string `json:"data"`
+}
+
+type Users []User
+
+func main() {
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:8082")
+
+    // Connect to MongoDB
+    client, err := mongo.Connect(context.TODO(), clientOptions)
+
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    err = client.Ping(context.TODO(), nil)
+
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println("Connected to MongoDB!")
+
+    collection := client.Database("database2").Collection("people")
+
+    findOptions := options.Find()
+    findOptions.SetLimit(20)
+
+    cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
+    //cur, err := collection.Find(context.Background(), bson.D{},)
+    
+    if err != nil {
+        log.Fatal(err) }
+
+    var users Users
+    var user User
+
+    for cur.Next(context.TODO()) {
+        
+        elem := &bson.D{}
+        
+        if err := cur.Decode(elem); err != nil {
+                log.Fatal(err)
+        }
+
+        fmt.Println(elem)
+        fmt.Println()
+
+        users = append(users, user)
+    }
+
+    if err := cur.Err(); err != nil {
+        log.Fatal(err)
+    }
+
+    /*for _, sus := range users{
+        fmt.Println(sus)
+        fmt.Println()
+    }*/
+
+    // Close the cursor once finished
+    cur.Close(context.TODO())
+    
+    err = client.Disconnect(context.TODO())
+
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println("Connection to MongoDB closed.")
+
+    }
+
+
+
+/*package main
+
+
+import (
 	"net/http"
     "github.com/gin-gonic/gin"
 )
@@ -14,30 +119,14 @@ type Article struct {
     Content string `json:"content"`
 }
 
-// let's declare a global Articles array
-// that we can then populate in our main function
-// to simulate a database
 type Articles []Article
 
-/*func allArticles(w http.ResponseWriter, r *http.Request){
+func allArticles(c *gin.Context){
 	articles := Articles{
 		Article{Title:"Title Test", Desc:"Descritpion test", Content:"Salut a tous"},
-	}
-    json.NewEncoder(w).Encode(articles)
-}*/
-
-/*func homePage(w http.ResponseWriter, r *http.Request){
-    fmt.Fprintf(w, "Welcome to the HomePage!")
-    fmt.Println("Endpoint Hit: homePage")
-}*/
-
-/*func allArticles(){
-	articles := Articles{
-		Article{Title:"Title Test", Desc:"Descritpion test", Content:"Salut a tous"},
-	}
-    fmt.Println("Endpoint Hit: AllArticles")
-    json.NewEncoder(w).Encode(articles)
-}*/
+    }
+    c.JSON(200, articles)
+}
 
 func homePage(c *gin.Context){
     jsonData := []byte(`{"msg":"welcome to homepage"}`)
@@ -46,27 +135,13 @@ func homePage(c *gin.Context){
 
 func handleRequests() {
     router := gin.Default()
+
     router.GET("/", homePage)
-
-	router.GET("/all", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "articles",
-		})
-    })
-
-    /*router.GET("/", homePage)
-    router.GET("/articles", allArticles)*/
+	router.GET("/all", allArticles)
     
     router.Run()
-    
-   /* myRouter := mux.NewRouter().StrictSlash(true)
-
-    myRouter.HandleFunc("/", homePage)
-    myRouter.HandleFunc("/all", allArticles)
-
-	log.Fatal(http.ListenAndServe(":8081", myRouter))*/
 }
 
 func main() {
     handleRequests()
-}
+}*/

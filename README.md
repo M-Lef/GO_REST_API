@@ -1,0 +1,1 @@
+You will need to have Gin Gonic and MongoDb installed on your computer to run this project
