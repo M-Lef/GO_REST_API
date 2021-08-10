@@ -52,18 +52,13 @@ func main() {
 
     // Close the cursor once finished
     cur.Close(context.TODO())
+
+    Helper.HandleRequests()
     
     Helper.DisconnectDB(client)
 }
 
-/*package main
-
-import (
-	"net/http"
-    "github.com/gin-gonic/gin"
-)
-
-type Article struct {
+/*type Article struct {
     Title string `json:"Title"`
     Desc string `json:"desc"`
     Content string `json:"content"`
@@ -76,22 +71,4 @@ func allArticles(c *gin.Context){
 		Article{Title:"Title Test", Desc:"Descritpion test", Content:"Salut a tous"},
     }
     c.JSON(200, articles)
-}
-
-func homePage(c *gin.Context){
-    jsonData := []byte(`{"msg":"welcome to homepage"}`)
-    c.Data(http.StatusOK, "application/json", jsonData)
-}
-
-func handleRequests() {
-    router := gin.Default()
-
-    router.GET("/", homePage)
-	router.GET("/all", allArticles)
-    
-    router.Run()
-}
-
-func main() {
-    handleRequests()
 }*/

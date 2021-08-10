@@ -8,7 +8,28 @@ import (
 	"net/http"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/gin-gonic/gin"
 )
+
+func HandleRequests() {
+    router := gin.Default()
+
+	router.GET("/", homePage)
+	router.POST("/add/user", homePage)
+	router.POST("/login", homePage)
+	router.DELETE("/delete/user/:id", homePage)
+	router.GET("/users/list", homePage)
+	router.GET("user/:id", homePage)
+	//Patch method remplace method UPDATE
+	router.PATCH("user/:id", homePage)
+    
+    router.Run(":8080")
+}
+
+func homePage(c *gin.Context){
+    jsonData := []byte(`Welcome to homepage`)
+    c.Data(http.StatusOK, "application/json", jsonData)
+}
 
 // ConnectDB : This is helper function to connect mongoDB
 func ConnectDB() *mongo.Client {
