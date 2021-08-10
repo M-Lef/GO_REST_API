@@ -2,6 +2,7 @@ package Helper
 
 import (
 	"context"
+	"GO_REST_API/FirstLayer"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,15 +12,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HandleRequests() {
+// HandleRequests : Here we are creating our endpoints
+func HandleRequests(collection *mongo.Collection) {
     router := gin.Default()
 
 	router.GET("/", homePage)
+
 	router.POST("/add/user", homePage)
 	router.POST("/login", homePage)
+
 	router.DELETE("/delete/user/:id", homePage)
-	router.GET("/users/list", homePage)
-	router.GET("user/:id", homePage)
+
+	router.GET("user/:id", func(c *gin.Context) {Controller.GetUser(c, collection)})
+	router.GET("/users/list", func(c *gin.Context) {Controller.GetUsers(c, collection)})
+
 	//Patch method remplace method UPDATE
 	router.PATCH("user/:id", homePage)
     
@@ -85,3 +91,44 @@ func GetError(err error, w http.ResponseWriter) {
 	w.WriteHeader(response.StatusCode)
 	w.Write(message)
 }
+
+/*func SuS {
+
+	findOptions := options.Find()
+	findOptions.SetLimit(20)
+
+	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	//cur, err := collection.Find(context.Background(), bson.D{},)
+
+	if err != nil {
+		log.Fatal(err) }
+
+	var users Helper.Users
+	var user Helper.User
+
+	for cur.Next(context.TODO()) {
+		
+		elem := &bson.D{}
+
+		if err := cur.Decode(elem); err != nil {
+				log.Fatal(err)
+		}
+
+		fmt.Println(elem)
+		fmt.Println()
+
+		users = append(users, user)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	for _, sus := range users{
+		fmt.Println(sus)
+		fmt.Println()
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+}*/
