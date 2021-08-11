@@ -1,44 +1,67 @@
 package Repository
 
 import (
-	"log"
-	"context"
-	//"GO_REST_API/UserStruct"
-	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"fmt"
+	"github.com/gin-gonic/gin"
+	"GO_REST_API/Users"
+	"context"
+	"log"
 )
 
-func FindUser(id string, c *gin.Context, collection *mongo.Collection){
+func FindUser(id string, c *gin.Context, collection *mongo.Collection) User.User{
+
+	cur, err := collection.Find(context.TODO(), bson.D{{}})
+
+	if err != nil {
+		log.Fatal(err) 
+	}
+
+	var res User.User
+
+	for cur.Next(context.TODO()) {
+		
+		var elem User.User
+		
+		if err := cur.Decode(&elem); err != nil {
+			log.Fatal(err)
+		}
+		
+		if (elem.ID == id) {
+			return elem
+		}
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return res
+}
+
+func FindUsers(c *gin.Context, collection *mongo.Collection) []*User.User{
 
 	cur, err := collection.Find(context.TODO(), bson.D{{}})
 
 	if err != nil {
 		log.Fatal(err) }
 
-	//var users Helper.Users
-	//var user Helper.User
+	var results []*User.User
 
+	defer cur.Close(context.TODO())
+	
 	for cur.Next(context.TODO()) {
-		
-		elem := &bson.D{}
+		var elem User.User
 
-		if err := cur.Decode(elem); err != nil {
-				log.Fatal(err)
+		if err := cur.Decode(&elem); err != nil {
+			log.Fatal(err)
 		}
 
-		fmt.Println(elem)
-		fmt.Println()
-
-		//users = append(users, user)
+		results = append(results, &elem)
 	}
 
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
-}
 
-func FindUsers(c *gin.Context, collection *mongo.Collection){
-
+	return results
 }

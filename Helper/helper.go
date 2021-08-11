@@ -1,15 +1,15 @@
 package Helper
 
 import (
-	"context"
 	"GO_REST_API/FirstLayer"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/gin-gonic/gin"
 	"encoding/json"
+	"net/http"
+	"context"
 	"fmt"
 	"log"
-	"net/http"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"github.com/gin-gonic/gin"
 )
 
 // HandleRequests : Here we are creating our endpoints
@@ -38,9 +38,9 @@ func homePage(c *gin.Context){
 }
 
 // ConnectDB : This is helper function to connect mongoDB
-func ConnectDB() *mongo.Client {
+func ConnectDB(uri string) *mongo.Client {
 
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:8082")
+	clientOptions := options.Client().ApplyURI(uri)
 
     // Connect to MongoDB
     client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -91,44 +91,3 @@ func GetError(err error, w http.ResponseWriter) {
 	w.WriteHeader(response.StatusCode)
 	w.Write(message)
 }
-
-/*func SuS {
-
-	findOptions := options.Find()
-	findOptions.SetLimit(20)
-
-	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
-	//cur, err := collection.Find(context.Background(), bson.D{},)
-
-	if err != nil {
-		log.Fatal(err) }
-
-	var users Helper.Users
-	var user Helper.User
-
-	for cur.Next(context.TODO()) {
-		
-		elem := &bson.D{}
-
-		if err := cur.Decode(elem); err != nil {
-				log.Fatal(err)
-		}
-
-		fmt.Println(elem)
-		fmt.Println()
-
-		users = append(users, user)
-	}
-
-	if err := cur.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	for _, sus := range users{
-		fmt.Println(sus)
-		fmt.Println()
-	}
-
-	// Close the cursor once finished
-	cur.Close(context.TODO())
-}*/
