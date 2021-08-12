@@ -32,7 +32,7 @@ func AddUser_(c *gin.Context, collection *mongo.Collection){
 		panic(err)
 	}
 	var new_users[] User.User
-
+	
 	for _ , a := range users {
 		database_user := Repository.FindUsers(c, collection)
 		var pres bool = true

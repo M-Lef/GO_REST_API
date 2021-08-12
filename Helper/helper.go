@@ -27,7 +27,7 @@ func HandleRequests(collection *mongo.Collection, port string) {
 	router.GET("/users/list", func(c *gin.Context) {Controller.GetUsers(c, collection)})
 
 	//Patch method remplace method UPDATE
-	router.PATCH("user/:id", homePage)
+	router.PUT("user/:id", func(c *gin.Context) {Controller.PutUser(c, collection)})
     
     router.Run(":" + port)
 }
