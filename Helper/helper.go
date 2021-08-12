@@ -18,7 +18,7 @@ func HandleRequests(collection *mongo.Collection) {
 
 	router.GET("/", homePage)
 
-	router.POST("/add/user", homePage)
+	router.POST("/add/users", func(c *gin.Context) {Controller.AddUser(c, collection)})
 	router.POST("/login", homePage)
 
 	router.DELETE("/delete/user/:id", homePage)

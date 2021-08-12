@@ -2,5 +2,3 @@ mongodb-macos-x86_64-5.0.2/
 data/
 .DS_Store
 GO_REST_API
-go.mod
-go.sum
