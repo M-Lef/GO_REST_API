@@ -13,7 +13,7 @@ import (
 )
 
 // HandleRequests : Here we are creating our endpoints
-func HandleRequests(collection *mongo.Collection) {
+func HandleRequests(collection *mongo.Collection, port string) {
     router := gin.Default()
 
 	router.GET("/", homePage)
@@ -21,7 +21,7 @@ func HandleRequests(collection *mongo.Collection) {
 	router.POST("/add/users", func(c *gin.Context) {Controller.AddUser(c, collection)})
 	router.POST("/login", homePage)
 
-	router.DELETE("/delete/user/:id", homePage)
+	router.DELETE("/delete/user/:id", func(c *gin.Context) {Controller.DelUser(c, collection)})
 
 	router.GET("user/:id", func(c *gin.Context) {Controller.GetUser(c, collection)})
 	router.GET("/users/list", func(c *gin.Context) {Controller.GetUsers(c, collection)})
@@ -29,7 +29,7 @@ func HandleRequests(collection *mongo.Collection) {
 	//Patch method remplace method UPDATE
 	router.PATCH("user/:id", homePage)
     
-    router.Run(":8080")
+    router.Run(":" + port)
 }
 
 func homePage(c *gin.Context){

@@ -4,7 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"github.com/gin-gonic/gin"
-	"GO_REST_API/Users"
+	"GO_REST_API/User_Data"
 	"context"
 	"log"
 )

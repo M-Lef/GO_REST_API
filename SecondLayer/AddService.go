@@ -4,7 +4,7 @@ import (
 	"GO_REST_API/ThirdLayer"
 	"go.mongodb.org/mongo-driver/mongo"
 	"github.com/gin-gonic/gin"
-	"GO_REST_API/Users"
+	"GO_REST_API/User_Data"
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
 	"fmt"
@@ -43,7 +43,7 @@ func AddUser_(c *gin.Context, collection *mongo.Collection){
 			}
 		}
 		if (pres) {
-			path := "Users/" + a.ID
+			path := "User_data/" + a.ID
 			err = ioutil.WriteFile(path, []byte(a.Data), 0755)
 			if err != nil {
 				fmt.Printf("Unable to write file: %v", err)
