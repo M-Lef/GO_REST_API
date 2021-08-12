@@ -6,8 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"GO_REST_API/User_Data"
 	"gopkg.in/mgo.v2/bson"
+	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"fmt"
+	"log"
 )
 
 func AddUser_(c *gin.Context, collection *mongo.Collection){
@@ -27,9 +29,9 @@ func AddUser_(c *gin.Context, collection *mongo.Collection){
         }
 		str += string(buf)
 	}
-	err = bson.UnmarshalJSON([]byte(str),&users)
+	err = bson.UnmarshalJSON([]byte(str), &users)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	var new_users[] User.User
 	
@@ -43,6 +45,15 @@ func AddUser_(c *gin.Context, collection *mongo.Collection){
 			}
 		}
 		if (pres) {
+			hash, er := bcrypt.GenerateFromPassword([]byte(a.Password), bcrypt.DefaultCost)
+			if er != nil {
+				log.Fatal(er)
+			}
+			a.Password = string(hash)
+			er = bcrypt.CompareHashAndPassword([]byte(hash), []byte(a.Password))
+    		if er == nil {
+				fmt.Println("password equal")
+			}
 			path := "User_data/" + a.ID
 			err = ioutil.WriteFile(path, []byte(a.Data), 0755)
 			if err != nil {
