@@ -1,14 +1,14 @@
-I developed a rest api which include CRUD operations.
+I developed a rest api in Go which include CRUD operations.
 
 This project was created with three layers :
-    - The Controller : dealing with the connecting and sending response
-    - The Service : it's where all the business logic take place
-    - The Repository : it's where we interract with the database
+- The Controller : dealing with the connecting and sending response
+- The Service : it's where all the business logic take place
+- The Repository : it's where we interract with the database
 
 In the main.go file you will need :
-    - Change the URI to connect to your MongoDB server
-    - Change the name of the database and the collection
-    - You can also change the port number
+- Change the URI to connect to your MongoDB server
+- Change the name of the database and the collection
+- You can also change the port number
 
 I used PostMan to test my requests.
 
