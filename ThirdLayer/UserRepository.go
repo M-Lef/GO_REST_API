@@ -5,10 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"GO_REST_API/User_Data"
 	"go.mongodb.org/mongo-driver/bson"
-	//"gopkg.in/mgo.v2/bson"
 	"context"
 	"log"
-	//"fmt"
 )
 
 func FindUser(id string, c *gin.Context, collection *mongo.Collection) User.User{

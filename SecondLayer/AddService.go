@@ -8,18 +8,20 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
-	"fmt"
 	"log"
 )
 
 func AddUser_(c *gin.Context, collection *mongo.Collection){
 
 	var users[] User.User
+
 	file, _, err := c.Request.FormFile("file")
     if err != nil {
         return
-    }
-    defer file.Close()
+	}
+	
+	defer file.Close()
+	
 	buf := make([]byte, 1024)
 	var str string
     for {
@@ -29,10 +31,12 @@ func AddUser_(c *gin.Context, collection *mongo.Collection){
         }
 		str += string(buf)
 	}
+
 	err = bson.UnmarshalJSON([]byte(str), &users)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var new_users[] User.User
 	
 	for _ , a := range users {
@@ -50,14 +54,10 @@ func AddUser_(c *gin.Context, collection *mongo.Collection){
 				log.Fatal(er)
 			}
 			a.Password = string(hash)
-			er = bcrypt.CompareHashAndPassword([]byte(hash), []byte(a.Password))
-    		if er == nil {
-				fmt.Println("password equal")
-			}
 			path := "User_data/" + a.ID
 			err = ioutil.WriteFile(path, []byte(a.Data), 0755)
 			if err != nil {
-				fmt.Printf("Unable to write file: %v", err)
+				log.Fatal(err)
 			}
 			new_users = append(new_users, a)
 		}

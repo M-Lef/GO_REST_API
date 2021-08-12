@@ -22,12 +22,15 @@ func GetUsers_(c *gin.Context, collection *mongo.Collection) []*User.User{
 }
 
 func PutUser_(c *gin.Context, collection *mongo.Collection) {
+	
 	id := c.Param("id")
 	var user User.User
+
 	jsonData, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	err = bson.UnmarshalJSON(jsonData, &user)
 	if err != nil {
 		log.Fatal(err)

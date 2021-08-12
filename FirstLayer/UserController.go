@@ -16,7 +16,6 @@ func GetUsers(c *gin.Context, collection *mongo.Collection) {
 	c.JSON(200, users)
 }
 
-
 func PutUser(c *gin.Context, collection *mongo.Collection) {
 	Service.PutUser_(c, collection)
 }
